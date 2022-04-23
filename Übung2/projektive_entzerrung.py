@@ -35,15 +35,11 @@ def projective_qualization_parameter(object_points, picture_points):
         [0, 0, 0, x_4, y_4, 1, -y4*x_4, -y4*y_4]
     ])
 
-    print(M)
-
     x_vec = np.transpose(np.array([[x1, y1, x2, y2, x3, y3, x4, y4]]))
     M_inv = np.linalg.inv(M)
 
     print(x_vec)
     a_vec =  M_inv @ x_vec
-
-
 
     return a_vec
 
@@ -51,15 +47,16 @@ def projective_qualization_parameter(object_points, picture_points):
 def projektive_equalization(image, a_vec):
     equal_image = np.zeros((1001,1001,3))
 
-    a1 = a_vec[0]
-    a2 = a_vec[1]
-    a3 = a_vec[2]
-    b1 = a_vec[3]
-    b2 = a_vec[4]
-    b3 = a_vec[5]
-    c1 = a_vec[6]
-    c2 = a_vec[7]
-    
+
+    a1 = a_vec[0][0]
+    a2 = a_vec[1][0]
+    a3 = a_vec[2][0]
+    b1 = a_vec[3][0]
+    b2 = a_vec[4][0]
+    b3 = a_vec[5][0]
+    c1 = a_vec[6][0]
+    c2 = a_vec[7][0]
+
     for x in range(image.shape[0]):
         for y in range(image.shape[1]):
 
@@ -67,9 +64,6 @@ def projektive_equalization(image, a_vec):
             
             x_ = int( np.rint(( (b2 - c2*b3)*x + (a3*c2 - a2)*y + a2*b3 - a3*b2 ) / denuminator ))
             y_ = int( np.rint(( (b3*c1 - b1)*x + (a1 - a3*c1)*y + a3*b1 - a1*b3 ) / denuminator ))
-
-            #print(x_)
-            #print(y_)
 
             if ( 0 < x_ <= 1000 and 0 < y_ <= 1000):
                 equal_image[x_, y_, :] = image[x, y, :]
@@ -80,9 +74,9 @@ if __name__ == "__main__":
     # Load Image
     image = skimage.io.imread(fname="./Übung2/schraegbild_tempelhof.jpg")
 
-    picture_points = [[344, 434], [367,334], [521,331], [653, 427]]
+    picture_points = [[367,334], [344, 434], [521,331], [653, 427]]
     # object_points = [[52.471599, 13.416611],[52.471024, 13.391926], [52.474219, 13.389994], [52.475361, 13.416062]]
-    object_points = [[187, 840],[160, 154], [304, 101], [357, 822]]
+    object_points = [[160, 154], [187, 840], [304, 101], [357, 822]]
 
 
     """
@@ -102,6 +96,6 @@ if __name__ == "__main__":
     plt.imshow(image)
 
     fig.add_subplot(1, 2, 2)
-    plt.imshow(equal_image)
+    plt.imshow(equal_image.astype(np.uint8))
 
     plt.show()
