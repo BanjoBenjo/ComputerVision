@@ -35,16 +35,21 @@ def projective_qualization_parameter(object_points, picture_points):
         [0, 0, 0, x_4, y_4, 1, -y4*x_4, -y4*y_4]
     ])
 
-    x_vec = np.array([x1, y1, x2, y2, x3, y3, x4, y4])
+    print(M)
+
+    x_vec = np.transpose(np.array([[x1, y1, x2, y2, x3, y3, x4, y4]]))
     M_inv = np.linalg.inv(M)
 
+    print(x_vec)
     a_vec =  M_inv @ x_vec
+
+
 
     return a_vec
 
 
 def projektive_equalization(image, a_vec):
-    equal_image = np.empty(image.shape)
+    equal_image = np.zeros((1001,1001,3))
 
     a1 = a_vec[0]
     a2 = a_vec[1]
@@ -57,25 +62,46 @@ def projektive_equalization(image, a_vec):
     
     for x in range(image.shape[0]):
         for y in range(image.shape[1]):
-            pixel_value = image[x][y]
+
+            denuminator = ( (b1*c2 - b2*c1)*x + (a2*c1 - a1*c2)*y + a1*b2 - a2*b1 )
             
-            x_ = (( (b2 - c2*b3)*x + (a3*c2 - a2)*y + a2*b3 - a3*b3 ) /
-                ( (b1*c2 - b2*c1)*x + (a2*c1 - a1*c2)*y + a1*b2 - a2*b1 ))
+            x_ = int( np.rint(( (b2 - c2*b3)*x + (a3*c2 - a2)*y + a2*b3 - a3*b2 ) / denuminator ))
+            y_ = int( np.rint(( (b3*c1 - b1)*x + (a1 - a3*c1)*y + a3*b1 - a1*b3 ) / denuminator ))
 
-            y_ = (( (b3*c1 - b1)*x + (a1 - a3*c1)*y + a3*b1 - a1*b3 ) /
-                ( (b1*c2 - b2*c1)*x + (a2*c1 - a1*c2)*y + a1*b2 - a2*b1 )) 
+            #print(x_)
+            #print(y_)
 
-            print(x_)
-            print(y_)
-
-            equal_image[x_][y_] = pixel_value
+            if ( 0 < x_ <= 1000 and 0 < y_ <= 1000):
+                equal_image[x_, y_, :] = image[x, y, :]
 
     return equal_image
 
 if __name__ == "__main__":
     # Load Image
-    image = skimage.io.imread(fname="./Übung1/gletscher.jpg")
-    #image = skimage.io.imread(fname="./ambassadors.jpg")
+    image = skimage.io.imread(fname="./Übung2/schraegbild_tempelhof.jpg")
 
-    image = rgb2gray(image) # already normalized
+    picture_points = [[344, 434], [367,334], [521,331], [653, 427]]
+    # object_points = [[52.471599, 13.416611],[52.471024, 13.391926], [52.474219, 13.389994], [52.475361, 13.416062]]
+    object_points = [[187, 840],[160, 154], [304, 101], [357, 822]]
 
+
+    """
+    picture_points_norm = [[x[0]-367, x[1]-334] for x in picture_points ]
+    object_points_norm = [[(x[0]-52.471024)* 100, (x[1]-13.391926) * 10000] for x in object_points ]
+    """
+
+
+    a_vec = projective_qualization_parameter(object_points, picture_points)
+
+    print(a_vec)
+
+    equal_image = projektive_equalization(image, a_vec)
+
+    fig = plt.figure(figsize=(1, 2))
+    fig.add_subplot(1, 2, 1)
+    plt.imshow(image)
+
+    fig.add_subplot(1, 2, 2)
+    plt.imshow(equal_image)
+
+    plt.show()
