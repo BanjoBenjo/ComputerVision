@@ -79,12 +79,6 @@ if __name__ == "__main__":
     object_points = [[160, 154], [187, 840], [304, 101], [357, 822]]
     """
 
-    #passpoints =                       np.array([[[338, 345], [100, 250]]])
-    #passpoints = np.append(passpoints, np.array([[[432, 313], [657, 250]]]), axis = 0)
-    #passpoints = np.append(passpoints, np.array([[[335, 545], [100, 610]]]), axis = 0)
-    #passpoints = np.append(passpoints, np.array([[[423, 681], [657, 610]]]), axis = 0)
-
-
     picture_points = [[338, 345],[432, 313],[335, 545],[423, 681]]
     object_points = [[100, 250], [657, 250], [100, 610], [657, 610]]
 
