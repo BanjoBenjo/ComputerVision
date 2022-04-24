@@ -45,8 +45,7 @@ def projective_qualization_parameter(object_points, picture_points):
 
 
 def projektive_equalization(image, a_vec):
-    equal_image = np.zeros((1001,1001,3))
-
+    equal_image = np.zeros(image.shape)
 
     a1 = a_vec[0][0]
     a2 = a_vec[1][0]
@@ -57,16 +56,16 @@ def projektive_equalization(image, a_vec):
     c1 = a_vec[6][0]
     c2 = a_vec[7][0]
 
-    for x in range(image.shape[0]):
-        for y in range(image.shape[1]):
+    for x in range(equal_image.shape[0]):
+        for y in range(equal_image.shape[1]):
 
             denuminator = ( (b1*c2 - b2*c1)*x + (a2*c1 - a1*c2)*y + a1*b2 - a2*b1 )
             
             x_ = int( np.rint(( (b2 - c2*b3)*x + (a3*c2 - a2)*y + a2*b3 - a3*b2 ) / denuminator ))
             y_ = int( np.rint(( (b3*c1 - b1)*x + (a1 - a3*c1)*y + a3*b1 - a1*b3 ) / denuminator ))
 
-            if ( 0 < x_ <= 1000 and 0 < y_ <= 1000):
-                equal_image[x_, y_, :] = image[x, y, :]
+            if ( 0 < x_ <= equal_image.shape[0]-1 and 0 < y_ < equal_image.shape[1]-1):
+                equal_image[x, y, :] = image[x_, y_, :]
 
     return equal_image
 
@@ -74,15 +73,20 @@ if __name__ == "__main__":
     # Load Image
     image = skimage.io.imread(fname="./Übung2/schraegbild_tempelhof.jpg")
 
+    """
     picture_points = [[367,334], [344, 434], [521,331], [653, 427]]
     # object_points = [[52.471599, 13.416611],[52.471024, 13.391926], [52.474219, 13.389994], [52.475361, 13.416062]]
     object_points = [[160, 154], [187, 840], [304, 101], [357, 822]]
+    """
+
+    #passpoints =                       np.array([[[338, 345], [100, 250]]])
+    #passpoints = np.append(passpoints, np.array([[[432, 313], [657, 250]]]), axis = 0)
+    #passpoints = np.append(passpoints, np.array([[[335, 545], [100, 610]]]), axis = 0)
+    #passpoints = np.append(passpoints, np.array([[[423, 681], [657, 610]]]), axis = 0)
 
 
-    """
-    picture_points_norm = [[x[0]-367, x[1]-334] for x in picture_points ]
-    object_points_norm = [[(x[0]-52.471024)* 100, (x[1]-13.391926) * 10000] for x in object_points ]
-    """
+    picture_points = [[338, 345],[432, 313],[335, 545],[423, 681]]
+    object_points = [[100, 250], [657, 250], [100, 610], [657, 610]]
 
 
     a_vec = projective_qualization_parameter(object_points, picture_points)
