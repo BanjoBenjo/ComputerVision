@@ -114,7 +114,6 @@ def multi_band_blending(img_1, img_1_weights, img_2, img_2_weights,):
     (stitched_image_tp, w_tp) = stitch(img_1_tp, img_2_tp ,img_1_weights, img_2_weights, 'sum')
     (stitched_image_hp, w_hp) = stitch(img_1_hp, img_2_hp ,img_1_weights, img_2_weights, 'weights')
 
-
     stitched_image = stitched_image_tp + stitched_image_hp # addieren der Bilder
 
     return stitched_image, w_tp
