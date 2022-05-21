@@ -4,41 +4,27 @@ import numpy as np
 from skimage.color import rgb2gray
 
 def projective_qualization_parameter(object_points, picture_points):
-    # xi ist Objektkoordiante
-    # xi_ ist die Bildkoordinate
-    x1 = object_points[0][0]
-    y1 = object_points[0][1]
-    x2 = object_points[1][0]
-    y2 = object_points[1][1]
-    x3 = object_points[2][0]
-    y3 = object_points[2][1]
-    x4 = object_points[3][0]
-    y4 = object_points[3][1]
+    M = np.zeros(shape=(2*len(object_points), 8)).astype('int')
+    x_vec = np.zeros(shape=(2*len(object_points), 1)).astype('int')
 
-    x_1 = picture_points[0][0]
-    y_1 = picture_points[0][1]
-    x_2 = picture_points[1][0]
-    y_2 = picture_points[1][1]
-    x_3 = picture_points[2][0]
-    y_3 = picture_points[2][1]
-    x_4 = picture_points[3][0]
-    y_4 = picture_points[3][1]
+    for point_nr in range(len(object_points)):
+        picture_point = picture_points[point_nr]
+        object_point = object_points[point_nr]
 
-    M = np.array([
-        [x_1, y_1, 1, 0, 0, 0, -x1*x_1, -x1*y_1],
-        [0, 0, 0, x_1, y_1, 1, -y1*x_1, -y1*y_1],
-        [x_2, y_2, 1, 0, 0, 0, -x2*x_2, -x2*y_2],
-        [0, 0, 0, x_2, y_2, 1, -y2*x_2, -y2*y_2],
-        [x_3, y_3, 1, 0, 0, 0, -x3*x_3, -x3*y_3],
-        [0, 0, 0, x_3, y_3, 1, -y3*x_3, -y3*y_3],
-        [x_4, y_4, 1, 0, 0, 0, -x4*x_4, -x4*y_4],
-        [0, 0, 0, x_4, y_4, 1, -y4*x_4, -y4*y_4]
-    ])
+        x = object_point[0]
+        y = object_point[1]
+        x_ = picture_point[0]
+        y_ = picture_point[1]
 
-    x_vec = np.transpose(np.array([[x1, y1, x2, y2, x3, y3, x4, y4]]))
+        index = point_nr*2
+   
+        M[index] = np.array([x_, y_, 1, 0, 0, 0, -x*x_, -x*y_])
+        M[index + 1] = np.array([0, 0, 0, x_, y_, 1, -y*x_, -y*y_])
+
+        x_vec[index] = [x]
+        x_vec[index + 1] = [y]
+
     M_inv = np.linalg.inv(M)
-
-    print(x_vec)
     a_vec =  M_inv @ x_vec
 
     return a_vec
@@ -77,12 +63,14 @@ if __name__ == "__main__":
     picture_points = [[367,334], [344, 434], [521,331], [653, 427]]
     # object_points = [[52.471599, 13.416611],[52.471024, 13.391926], [52.474219, 13.389994], [52.475361, 13.416062]]
     object_points = [[160, 154], [187, 840], [304, 101], [357, 822]]
-    """
+    
+    picture_points = [[345, 434],[653, 427],[521,332],[366, 335]]
+    object_points = [[187, 839], [358, 822], [305, 102], [160, 155]]
+        """
 
     picture_points = [[338, 345],[432, 313],[335, 545],[423, 681]]
     object_points = [[100, 250], [657, 250], [100, 610], [657, 610]]
-
-
+    
     a_vec = projective_qualization_parameter(object_points, picture_points)
 
     print(a_vec)
