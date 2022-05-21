@@ -177,22 +177,21 @@ if __name__ == "__main__":
     (mbb_image2, mbb_weights2) = multi_band_blending(mbb_image1, mbb_weights1, equalized_images[2], weights[2])
     (mbb_image3, mbb_weights3) = multi_band_blending(mbb_image2, mbb_weights2, equalized_images[3], weights[3])
 
+    for image_nr in range(len(images)):
+        fig = plt.figure(figsize=(1, 2))
+        fig.add_subplot(1, 2, 1)
+        plt.imshow(equalized_images[image_nr].astype(np.uint8))
+
+        fig.add_subplot(1, 2, 2)
+        plt.imshow(weights[image_nr], interpolation='none')
+
+    fig = plt.figure()
+    plt.imshow(stitched_image_0123.astype(np.uint8))
+
+    fig = plt.figure()
+    plt.imshow(stitched_image_sum_0123.astype(np.uint8))
+
     fig = plt.figure()
     plt.imshow(mbb_image3.astype(np.uint8))
+    
     plt.show()
-
-    # for image_nr in range(len(images)):
-    #     fig = plt.figure(figsize=(1, 2))
-    #     fig.add_subplot(1, 2, 1)
-    #     plt.imshow(equalized_images[image_nr].astype(np.uint8))
-
-    #     fig.add_subplot(1, 2, 2)
-    #     plt.imshow(weights[image_nr], interpolation='none')
-
-    # fig = plt.figure()
-    # plt.imshow(stitched_image_0123.astype(np.uint8))
-
-    # fig = plt.figure()
-    # plt.imshow(stitched_image_sum_0123.astype(np.uint8))
-
-    # plt.show()
